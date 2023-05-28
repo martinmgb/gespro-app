@@ -1,0 +1,50 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Productos</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de Productos</h5>
+    <div class="row">
+      <div class="col-sm-2">
+        <mat-form-field>
+          <input matInput (keyup)="buscarProductosByNombre($event)" type="text" placeholder="Buscar" aria-label="Buscar">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-9"></div>
+      <div class="col-sm-1">
+        <button mat-raised-button color="primary" [routerLink]="['/productos/form']">Nuevo</button>
+      </div>
+    </div>
+    <div class="alert alert-info" *ngIf="productos?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="productos?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Costo</th>
+          <th>Precio Detal</th>
+          <th>Precio Mayor</th>
+          <th>Fecha Registro</th>
+          <th>Ultima Actualización</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos">
+          <td>{{producto.id}}</td>
+          <td>{{producto.nombre | uppercase}}</td>
+          <td>{{producto.costoTotal | currency: '$'}}</td>
+          <td>{{producto.precioDetal | currency: '$' }}</td>
+          <td>{{producto.precioMayor | currency: '$' }}</td>
+          <td>{{producto.createAt | date:"dd/MM/yyyy"}}</td>
+          <td>{{producto.updatedAt | date:"dd/MM/yyyy"}}</td>
+          <td>
+            <button mat-raised-button color="primary" [routerLink]="['/productos/form', producto.id]"><mat-icon>edit</mat-icon></button>
+            <button mat-raised-button color="warn" (click) = "delete(producto)"><mat-icon>delete</mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

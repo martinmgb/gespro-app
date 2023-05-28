@@ -1,0 +1,217 @@
+<ul class="alert alert-danger" *ngIf="errors?.length > 0">
+  <li *ngFor="let err of errors">
+    {{err}}
+  </li>
+</ul>
+
+<div class="card bg-light">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body">
+
+    <form [formGroup]="form">
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <!--mat-form-field>
+            <mat-label>Cliente</mat-label>
+            <mat-select [compareWith]="compararCliente" formControlName="cliente" required>
+              <mat-option>Seleccione cliente...</mat-option>
+              <mat-option *ngFor="let cliente of clientes" [value]="cliente">
+                {{cliente.nombre}}
+              </mat-option>
+            </mat-select>
+            <div class="messages" *ngIf="clienteField.touched && clienteField.invalid">
+              <mat-error *ngIf="clienteField.hasError('required')">
+                Cliente es requerido
+              </mat-error>
+            </div>
+          </mat-form-field-->
+
+          <mat-form-field class="example-full-width">
+              <input type="text" placeholder="Cliente" aria-label="Number" matInput formControlName="cliente" [matAutocomplete]="auto">
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"> 
+                <mat-option *ngFor="let client of filteredOptions | async" [value]="client">
+                  {{client.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+      
+
+      <!--<div class="form-group row">
+        <div class="col-sm-6">
+          <mat-radio-group formControlName="tipo" aria-label="Select an option">
+            <mat-radio-button value="0">Detal </mat-radio-button>
+            <mat-radio-button value="1">Mayor </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>-->
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <mat-form-field appearance="fill">
+            <mat-label>Tipo de Pedido</mat-label>
+            <mat-select [compareWith]="compararTipoPedido" formControlName="tipoPedido" required>
+              <mat-option value="DETAL">DETAL</mat-option>
+              <mat-option value="MAYOR">MAYOR</mat-option>
+            </mat-select>
+            <div class="messages" *ngIf="tipoPedidoField.touched && tipoPedidoField.invalid">
+              <mat-error *ngIf="tipoPedidoField.hasError('required')">
+                Tipo de pedido es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <mat-form-field>
+            <mat-label>Descuento</mat-label>
+            <input placeholder="Descuento" formControlName="porcentajeDescuento" matInput type="number">
+            <div class="messages" *ngIf="porcentajeDescuentoField.touched && porcentajeDescuentoField.invalid">
+              <mat-error *ngIf="porcentajeDescuentoField.hasError('min')">
+                Descuento debe ser del 0 al 100
+              </mat-error>
+              <mat-error *ngIf="porcentajeDescuentoField.hasError('max')">
+                Descuento debe ser del 0 al 100
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha de Entrega</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fechaEntrega">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <h5 class="card-title">Productos</h5>
+      <div class="my-2" *ngIf="!estadoPedidoField || (estadoPedidoField.id != 4 && estadoPedidoField.id != 5)">
+        <button mat-raised-button color="primary" (click)="openDialogProductoPedido(null)">Agregar Producto</button>
+      </div>
+      <div class="alert alert-info" *ngIf="!detalleProductosField || detalleProductosField?.length==0">
+        No se han agregado insumos al pedido.
+      </div>
+      <table class="table table-table-bordered table-table-striped" *ngIf="detalleProductosField?.length>0">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Costo por Unidad</th>
+            <th>Costo Total por Producto</th>
+            <th *ngIf="!estadoPedidoField || (estadoPedidoField.value.id != 4 && estadoPedidoField.value.id != 5)">Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detalleProducto of detalleProductosField.controls; let i=index">
+            <td>{{detalleProducto.value.producto.nombre | uppercase}}</td>
+            <td>{{detalleProducto.value.cantidad}}</td>
+            <td>{{detalleProducto.value.producto.costoTotal | currency: '$' }}</td>
+            <td>{{detalleProducto.value.cantidad*detalleProducto.value.producto.costoTotal | currency: '$' }}</td>
+            <td *ngIf="!estadoPedidoField || (estadoPedidoField.value.id != 4 && estadoPedidoField.value.id != 5)">
+              <button mat-raised-button color="primary" (click) = "openDialogProductoPedido(detalleProducto.value)"><mat-icon>edit</mat-icon></button>
+              <button mat-raised-button color="warn" (click) = "deleteProductoPedido(i)"><mat-icon>delete</mat-icon></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h5 class="card-title">Insumos del Pedido</h5>
+      <div class="my-2" *ngIf="!estadoPedidoField || (estadoPedidoField.value.id != 4 && estadoPedidoField.value.id != 5)">
+        <button mat-raised-button color="primary" (click)="openDialogInsumoPedido(null)">Agregar Insumo</button>
+      </div>
+      <div class="alert alert-info" *ngIf="!detalleInsumosField || detalleInsumosField?.length==0">
+        No se han agregado insumos al pedido.
+      </div>
+      <table class="table table-table-bordered table-table-striped" *ngIf="detalleInsumosField?.length>0">
+        <thead>
+          <tr>
+            <th>Insumo</th>
+            <th>Cantidad</th>
+            <th>Unidad de Medida</th>
+            <th>Costo por UM</th>
+            <th>Costo Total por Insumo</th>
+            <th *ngIf="!estadoPedidoField || (estadoPedidoField.value.id != 4 && estadoPedidoField.value.id != 5)">Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let insumoPedido of detalleInsumosField.controls; let i=index">
+            <td>{{insumoPedido.value.insumo.nombre | uppercase}}</td>
+            <td>{{insumoPedido.value.cantidad}}</td>
+            <td>{{insumoPedido.value.insumo.unidadMedida.nombreAbreviado | uppercase }}</td>
+            <td>{{insumoPedido.value.insumo.costo | currency: '$' }}</td>
+            <td>{{insumoPedido.value.importe | currency: '$' }}</td>
+            <td *ngIf="!estadoPedidoField || (estadoPedidoField.value.id != 4 && estadoPedidoField.value.id != 5)">
+              <button mat-raised-button color="primary" (click) = "openDialogInsumoPedido(insumoPedido.value)"><mat-icon>edit</mat-icon></button>
+              <button mat-raised-button color="warn" (click) = "deleteInsumoPedido(i)"><mat-icon>delete</mat-icon></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <mat-card class="bg-light">
+        <mat-card-title>Resúmen</mat-card-title>
+        <mat-card-content>
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>Precio</mat-label>
+                <input matInput value="{{varPrecio}}" type="number" class="example-right-align" placeholder="0" readonly>
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>IVA</mat-label>
+                <input matInput value="{{varIva}}" type="number" class="example-right-align" placeholder="0" readonly>
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>Descuento</mat-label>
+                <input matInput value="{{varDescuento}}" type="number" class="example-right-align" placeholder="0" readonly>
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-3">
+              <mat-form-field appearance="fill" floatLabel="always">
+                <mat-label>Total</mat-label>
+                <input matInput value="{{varPrecioTotal}}" type="number" class="example-right-align" placeholder="0" readonly>
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <br>
+
+      <div class="form-group row" *ngIf="!estadoPedidoField || (estadoPedidoField.id != 4 && estadoPedidoField.id != 5)">
+        <div class="col-sm-12 d-flex justify-content-center">
+          <button mat-raised-button color="primary" (click)="create()" *ngIf="isNew else elseBlock" [disabled]="!form.valid">Crear</button>
+          <ng-template #elseBlock>
+            <button mat-raised-button color="primary" (click)="update()" [disabled]="!form.valid">Editar</button>
+          </ng-template>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+<!--app-form-insumo-pedido [pedido]="pedido"></app-form-insumo-pedido>
+<app-form-producto-pedido [pedido]="pedido"></app-form-producto-pedido-->

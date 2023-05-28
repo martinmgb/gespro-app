@@ -1,0 +1,29 @@
+<ul *ngIf="paginas?.length > 0" class="pagination">
+  <li  [ngClass]="paginador.number > 0?'page-item':'page-item disabled'">
+    <a *ngIf="paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.number-1]">&laquo;</a>
+    <a *ngIf="!paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.number-1]">&laquo;</a>
+  </li>
+
+  <li [ngClass]="paginador.first?'disabled page-item':'page-item'">
+    <a *ngIf="paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', 0]">Primera</a>
+    <a *ngIf="!paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', 0]">Primera</a>
+  </li>
+
+  <li *ngFor="let pagina of paginas" class="page-item" [ngClass]="pagina-1 == paginador.number? 'active': ''">
+    <span *ngIf="pagina-1 == paginador.number && paginador.filter" class="page-link">{{pagina}}</span>
+    <a *ngIf="pagina-1 != paginador.number && paginador.filter" class="page-link" [routerLink]="['/', paginador.component, paginador.filter, paginador.filterValue, 'page', pagina-1]">{{pagina}}</a>
+
+    <span *ngIf="pagina-1 == paginador.number && !paginador.filter" class="page-link">{{pagina}}</span>
+    <a *ngIf="pagina-1 != paginador.number && !paginador.filter" class="page-link" [routerLink]="['/', paginador.component, 'page', pagina-1]">{{pagina}}</a>
+  </li>
+
+  <li [ngClass]="paginador.last?'disabled page-item':'page-item'">
+    <a *ngIf="paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.totalPages-1]">Última</a>
+    <a *ngIf="!paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.totalPages-1]">Última</a>
+  </li>
+
+  <li  [ngClass]="paginador.number < paginador.totalPages-1?'page-item':'page-item disabled'">
+    <a *ngIf="paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.number+1]">&raquo;</a>
+    <a *ngIf="!paginador.filter" class="page-link" [routerLink]="['/',paginador.component,'page', paginador.number+1]">&raquo;</a>
+  </li>
+</ul>

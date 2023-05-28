@@ -1,0 +1,52 @@
+<detalle-cliente *ngIf="clienteSeleccionado" [cliente]="clienteSeleccionado"></detalle-cliente>
+<div class="card bg-light mb-3">
+  <div class="card-header">Clientes</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de clientes</h5>
+    <div class="row">
+      <div class="col-sm-2">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Buscar" aria-label="Buscar">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-9"></div>
+      <div class="col-sm-1">
+        <button mat-raised-button color="primary" [routerLink]="['/clientes/form']">Nuevo</button>
+      </div>
+    </div>
+    <div class="alert alert-info" *ngIf="clientes?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="clientes?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Fecha Nacimiento</th>
+          <th>Fecha Registro</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientes">
+          <td>
+            <img *ngIf="cliente?.foto" (click)="abrirModal(cliente)" style="width:64px; cursor:pointer;" src="https://t4.ftcdn.net/jpg/00/65/77/27/240_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg" alt="{{cliente.foto}}" class="img-thumbnail rounded">
+            <img *ngIf="!cliente?.foto" (click)="abrirModal(cliente)" style="width:64px; cursor:pointer;" src="https://t4.ftcdn.net/jpg/00/65/77/27/240_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg" alt="Sin foto" class="img-thumbnail rounded">
+          </td>
+          <td>{{cliente.nombre}}</td>
+          <td>{{cliente.apellido | uppercase}}</td>
+          <td>{{cliente.email}}</td>
+          <td>{{cliente.fechaNacimiento | date:"dd/MM/yyyy"}}</td>
+          <td>{{cliente.createAt | date:"EEEE, dd/MM/yyyy"}}</td>
+          <td>
+            <button mat-raised-button matTooltip="Editar" color="primary" [routerLink]="['/clientes/form', cliente.id]"><mat-icon>edit</mat-icon></button>
+            <button mat-raised-button matTooltip="Eliminar" color="warn" (click) = "delete(cliente)"><mat-icon>delete</mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

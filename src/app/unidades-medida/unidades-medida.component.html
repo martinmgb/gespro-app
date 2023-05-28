@@ -1,0 +1,36 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Unidades de Medida</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de Unidades de Medida</h5>
+    <div class="my-2">
+      <button mat-raised-button color="primary" [routerLink]="['/unidadesMedida/form']">Nuevo</button>
+    </div>
+    <div class="alert alert-info" *ngIf="unidadesMedida?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="unidadesMedida?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Nombre Abreviado</th>
+          <th>Fecha Registro</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let unidadMedida of unidadesMedida">
+          <td>{{unidadMedida.id}}</td>
+          <td>{{unidadMedida.nombre | uppercase}}</td>
+          <td>{{unidadMedida.nombreAbreviado}}</td>
+          <td>{{unidadMedida.createAt | date:"dd/MM/yyyy"}}</td>
+          <td>
+            <button mat-raised-button color="primary" [routerLink]="['/unidadesMedida/form', unidadMedida.id]"><mat-icon>edit</mat-icon></button>
+            <button mat-raised-button color="warn" (click) = "delete(unidadMedida)"><mat-icon>delete</mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

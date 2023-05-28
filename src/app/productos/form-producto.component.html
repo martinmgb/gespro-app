@@ -1,0 +1,144 @@
+<ul class="alert alert-danger" *ngIf="errors?.length > 0">
+  <li *ngFor="let err of errors">
+    {{err}}
+  </li>
+</ul>
+
+<div class="card bg-light">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body">
+
+    <form [formGroup]="form">
+
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input placeholder="Nombre" formControlName="nombre" matInput type="text">
+            <div class="messages" *ngIf="nombreField.touched && nombreField.invalid">
+              <mat-error *ngIf="nombreField.hasError('required')">
+                Nombre es requerido
+              </mat-error>
+              <mat-error *ngIf="nombreField.hasError('minlength')">
+                Nombre debe tener al menos 4 caracteres
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <mat-form-field>
+            <mat-label>PUD</mat-label>
+            <input placeholder="PUD" formControlName="porcentajeUtilidadDetal" matInput type="number" required>
+            <div class="messages" *ngIf="porcentajeUtilidadDetalField.touched && porcentajeUtilidadDetalField.invalid">
+              <mat-error *ngIf="porcentajeUtilidadDetalField.hasError('required')">
+                PUD es requerido
+              </mat-error>
+              <mat-error *ngIf="porcentajeUtilidadDetalField.hasError('min') || porcentajeUtilidadDetalField.hasError('max')">
+                PUD debe estar entre 1 y 100
+              </mat-error>
+            </div>
+            <mat-hint>Rango [0-100]</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <mat-form-field>
+            <mat-label>PUM</mat-label>
+            <input placeholder="PUM" formControlName="porcentajeUtilidadMayor" matInput type="number" required>
+            <div class="messages" *ngIf="porcentajeUtilidadMayorField.touched && porcentajeUtilidadMayorField.invalid">
+              <mat-error *ngIf="porcentajeUtilidadMayorField.hasError('required')">
+                PUM es requerido
+              </mat-error>
+              <mat-error *ngIf="porcentajeUtilidadMayorField.hasError('min') || porcentajeUtilidadMayorField.hasError('max')">
+                PUM debe estar entre 1 y 100
+              </mat-error>
+            </div>
+            <mat-hint>Rango [0-100]</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <h5 class="card-title">Productos que lo conforman</h5>
+      <div class="my-2">
+          <button mat-raised-button color="primary" (click)="openDialogProductoProducto(null)">Agregar Producto</button>
+      </div>
+      <div class="alert alert-info" *ngIf="!detalleProductosField || detalleProductosField?.length==0">
+        No se han agregado insumos al producto.
+      </div>
+      <table class="table table-table-bordered table-table-striped" *ngIf="detalleProductosField?.length>0">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Costo por Unidad</th>
+            <th>Costo Total por Producto</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detalleProducto of detalleProductosField.controls; let i=index">
+            <td>{{detalleProducto.value.producto.nombre | uppercase}}</td>
+            <td>{{detalleProducto.value.cantidad}}</td>
+            <td>{{detalleProducto.value.producto.costoTotal | currency: '$' }}</td>
+            <td>{{detalleProducto.value.cantidad*detalleProducto.value.producto.costoTotal | currency: '$' }}</td>
+            <td>
+              <button mat-raised-button color="primary" (click) = "openDialogProductoProducto(detalleProducto.value)"><mat-icon>edit</mat-icon></button>
+              <button mat-raised-button color="warn" (click) = "deleteProductoProducto(i)"><mat-icon>delete</mat-icon></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h5 class="card-title">Insumos del Producto</h5>
+      <div class="my-2">
+        <button mat-raised-button color="primary" (click)="openDialogInsumoProducto(null)">Agregar Insumo</button>
+      </div>
+      <div class="alert alert-info" *ngIf="!detalleInsumosField || detalleInsumosField?.length==0">
+        No se han agregado insumos al producto.
+      </div>
+      <table class="table table-table-bordered table-table-striped" *ngIf="detalleInsumosField?.length>0">
+        <thead>
+          <tr>
+            <th>Insumo</th>
+            <th>Cantidad</th>
+            <th>Unidad de Medida</th>
+            <th>Costo por UM</th>
+            <th>Costo Total por Insumo</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let insumoProducto of detalleInsumosField.controls; let i=index">
+            <td>{{insumoProducto.value.insumo.nombre | uppercase}}</td>
+            <td>{{insumoProducto.value.cantidad}}</td>
+            <td>{{insumoProducto.value.insumo.unidadMedida.nombreAbreviado | uppercase }}</td>
+            <td>{{insumoProducto.value.insumo.costo | currency: '$' }}</td>
+            <td>{{insumoProducto.value.importe | currency: '$' }}</td>
+            <td>
+              <button mat-raised-button color="primary" (click) = "openDialogInsumoProducto(insumoProducto.value)"><mat-icon>edit</mat-icon></button>
+              <button mat-raised-button color="warn" (click) = "deleteInsumoProducto(i)"><mat-icon>delete</mat-icon></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+
+      <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+
+      <div class="form-group row">
+        <div class="col-sm-12 d-flex justify-content-center">
+          <button mat-raised-button color="primary" (click)="create()" *ngIf="isNew else elseBlock" [disabled]="!form.valid">Crear</button>
+          <ng-template #elseBlock>
+            <button mat-raised-button color="primary" (click)="update()" [disabled]="!form.valid">Editar</button>
+          </ng-template>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

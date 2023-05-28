@@ -1,0 +1,50 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Insumos</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de Insumos</h5>
+    <div class="row">
+      <div class="col-sm-2">
+        <mat-form-field>
+          <input matInput (keyup)="buscarInsumosByNombre($event)" type="text" placeholder="Buscar" aria-label="Buscar">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-9"></div>
+      <div class="col-sm-1">
+        <button mat-raised-button color="primary" [routerLink]="['/insumos/form']">Nuevo</button>
+      </div>
+    </div>
+    <div class="alert alert-info" *ngIf="insumos?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="insumos?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Tipo de Insumo</th>
+          <th>Stock</th>
+          <th>Unidad de Medida</th>
+          <th>Costo</th>
+          <th>Fecha Registro</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let insumo of insumos">
+          <td>{{insumo.id}}</td>
+          <td>{{insumo.nombre | uppercase}}</td>
+          <td>{{insumo.tipoInsumo.nombre | uppercase}}</td>
+          <td>{{insumo.stock}}</td>
+          <td>{{insumo.unidadMedida.nombreAbreviado | uppercase}}</td>
+          <td>{{insumo.costo }}</td>
+          <td>{{insumo.createAt | date:"dd/MM/yyyy"}}</td>
+          <td>
+            <button mat-raised-button color="primary" [routerLink]="['/insumos/form', insumo.id]"><mat-icon>edit</mat-icon></button>
+            <button mat-raised-button color="warn" (click) = "delete(insumo)"><mat-icon>delete</mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

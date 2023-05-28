@@ -1,0 +1,34 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Tipos de Insumo</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de Tipos de Insumo</h5>
+    <div class="my-2">
+      <button mat-raised-button color="primary" [routerLink]="['/tiposInsumo/form']">Nuevo</button>
+    </div>
+    <div class="alert alert-info" *ngIf="tiposInsumo?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="tiposInsumo?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nombre</th>
+          <th>Fecha Registro</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tipoInsumo of tiposInsumo">
+          <td>{{tipoInsumo.id}}</td>
+          <td>{{tipoInsumo.nombre | uppercase}}</td>
+          <td>{{tipoInsumo.createAt | date:"dd/MM/yyyy"}}</td>
+          <td>
+            <button mat-raised-button color="primary" [routerLink]="['/tiposInsumo/form', tipoInsumo.id]"><mat-icon>edit</mat-icon></button>
+            <button mat-raised-button color="warn" (click) = "delete(tipoInsumo)"><mat-icon>delete</mat-icon></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

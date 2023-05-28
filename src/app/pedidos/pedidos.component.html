@@ -1,0 +1,55 @@
+<div class="card bg-light mb-3">
+  <div class="card-header">Pedidos</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">Listado de Pedidos</h5>
+    <div class="row">
+      <div class="col-sm-2">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Buscar" aria-label="Buscar">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-9"></div>
+      <div class="col-sm-1">
+        <button mat-raised-button color="primary" [routerLink]="['/pedidos/form']">Nuevo</button>
+      </div>
+    </div>
+    <div class="alert alert-info" *ngIf="pedidos?.length==0">
+      No existen registros en base de datos.
+    </div>
+    <table class="table table-table-bordered table-table-striped" *ngIf="pedidos?.length>0">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Cliente</th>
+          <th>Precio</th>
+          <th>Fecha Entrega</th>
+          <th>Estado</th>
+          <th>Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>{{pedido.id}}</td>
+          <td *ngIf="pedido.cliente">{{pedido.cliente.nombre | uppercase}}</td>
+          <td *ngIf="!pedido.cliente">SIN CLIENTE ASOCIADO</td>
+          <!--td *ngIf="pedido.precio">{{pedido.precio | currency: 'USD'}}</td-->
+          <td>{{pedido.precioDetal | currency: '$'}}</td>
+          <td *ngIf="!pedido.fechaEntrega">SIN FECHA DE ENTREGA</td>
+          <td *ngIf="pedido.fechaEntrega">{{pedido.fechaEntrega | date:"dd/MM/yyyy" }}</td>
+          <td>{{pedido.estadoPedido.nombre}}</td>
+          <td>
+            <div class="btn-toolbar">
+              
+            <button mat-raised-button matTooltip="Confirmar" *ngIf="pedido.estadoPedido.id == 1" color="success" (click) = "accionar(pedido, 'confirmar')"><mat-icon>done</mat-icon></button>
+            <button mat-raised-button matTooltip="Finalizar" *ngIf="pedido.estadoPedido.id == 2" color="success" (click) = "accionar(pedido, 'finalizar')"><mat-icon>done_all</mat-icon></button>
+            <button mat-raised-button matTooltip="Cancelar" *ngIf="pedido.estadoPedido.id == 2" color="warn" (click) = "accionar(pedido, 'cancelar')"><mat-icon>highlight_off</mat-icon></button>
+            <button mat-raised-button matTooltip="Ver" color="primary" [routerLink]="['/pedidos/form', pedido.id]"><mat-icon>search</mat-icon></button>
+            <button mat-raised-button matTooltip="Eliminar" *ngIf="pedido.estadoPedido.id != 4 && pedido.estadoPedido.id != 5" color="warn" (click) = "delete(pedido)"><mat-icon>delete</mat-icon></button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
+  </div>
+</div>

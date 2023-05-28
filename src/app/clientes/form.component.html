@@ -1,0 +1,85 @@
+<ul class="alert alert-danger" *ngIf="errors?.length > 0">
+  <li *ngFor="let err of errors">
+    {{err}}
+  </li>
+</ul>
+
+<div class="card bg-light">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body">
+
+    <form [formGroup]="form">
+
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input placeholder="Nombre" formControlName="nombre" matInput type="text">
+            <div class="messages" *ngIf="nombreField.touched && nombreField.invalid">
+              <mat-error *ngIf="nombreField.hasError('required')">
+                Nombre es requerido
+              </mat-error>
+              <mat-error *ngIf="nombreField.hasError('minlength')">
+                Nombre debe tener al menos 4 caracteres
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <mat-form-field>
+            <mat-label>Apellido</mat-label>
+            <input placeholder="Apellido" formControlName="apellido" matInput type="text">
+            <div class="messages" *ngIf="apellidoField.touched && apellidoField.invalid">
+              <mat-error *ngIf="apellidoField.hasError('required')">
+                Apellido es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-4">
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input placeholder="Email" formControlName="email" matInput type="text">
+            <div class="messages" *ngIf="emailField.touched && emailField.invalid">
+              <mat-error *ngIf="emailField.hasError('email')">
+                Email debe tener formato válido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha de Nacimiento</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <div class="messages" *ngIf="fechaNacimientoField.touched && fechaNacimientoField.invalid">
+              <mat-error *ngIf="fechaNacimientoField.hasError('required')">
+                Fecha de Nacimiento es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12 d-flex justify-content-center">
+          <button mat-raised-button color="primary" (click)="create()" *ngIf="isNew else elseBlock" [disabled]="!form.valid">Crear</button>
+          <ng-template #elseBlock>
+            <button mat-raised-button color="primary" (click)="update()" [disabled]="!form.valid">Editar</button>
+          </ng-template>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<ul class="alert alert-danger" *ngIf="errors?.length > 0">
+  <li *ngFor="let err of errors">
+    {{err}}
+  </li>
+</ul>
+
+<div class="card bg-light">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body">
+
+    <form [formGroup]="form">
+
+      <div class="form-group row">
+        <div class="col-sm-6">
+          <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input placeholder="Nombre" formControlName="nombre" matInput type="text">
+            <div class="messages" *ngIf="nombreField.touched && nombreField.invalid">
+              <mat-error *ngIf="nombreField.hasError('required')">
+                Nombre es requerido
+              </mat-error>
+              <mat-error *ngIf="nombreField.hasError('minlength')">
+                Nombre debe tener al menos 4 caracteres
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <mat-form-field>
+            <mat-label>Tipo de insumo</mat-label>
+            <mat-select [compareWith]="compararTipoInsumo" formControlName="tipoInsumo" required>
+              <mat-option>--</mat-option>
+              <mat-option *ngFor="let tipoInsumo of tiposInsumo" [value]="tipoInsumo">
+                {{tipoInsumo.nombre}}
+              </mat-option>
+            </mat-select>
+            <div class="messages" *ngIf="tipoInsumoField.touched && tipoInsumoField.invalid">
+              <mat-error *ngIf="tipoInsumoField.hasError('required')">
+                Tipo de insumo es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <mat-form-field>
+            <mat-label>Unidad de medida</mat-label>
+            <mat-select [compareWith]="compararUnidadMedida" formControlName="unidadMedida" required>
+              <mat-option>--</mat-option>
+              <mat-option *ngFor="let unidadMedida of unidadesMedida" [value]="unidadMedida">
+                {{unidadMedida.nombre}}
+              </mat-option>
+            </mat-select>
+            <div class="messages" *ngIf="unidadMedidaField.touched && unidadMedidaField.invalid">
+              <mat-error *ngIf="unidadMedidaField.hasError('required')">
+                Unidad de medida es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-2">
+          <mat-form-field>
+            <mat-label>Costo</mat-label>
+            <input placeholder="Costo" formControlName="costo" matInput type="number" required>
+            <div class="messages" *ngIf="costoField.touched && costoField.invalid">
+              <mat-error *ngIf="costoField.hasError('required')">
+                Costo es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-1">
+          <mat-form-field>
+            <mat-label>Stock</mat-label>
+            <input placeholder="Stock" formControlName="stock" matInput type="number" required>
+            <div class="messages" *ngIf="stockField.touched && stockField.invalid">
+              <mat-error *ngIf="stockField.hasError('required')">
+                Stock es requerido
+              </mat-error>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-12 d-flex justify-content-center">
+          <button mat-raised-button color="primary" (click)="create()" *ngIf="isNew else elseBlock" [disabled]="!form.valid">Crear</button>
+          <ng-template #elseBlock>
+            <button mat-raised-button color="primary" (click)="update()" [disabled]="!form.valid">Editar</button>
+          </ng-template>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div>
+<div class="modal" tabindex="-1" role="dialog" style="display:block;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ titulo }}</h5>
+        <button type="button" (click)="onNoClick()" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <ul class="alert alert-danger" *ngIf="errors?.length > 0">
+            <li *ngFor="let err of errors">
+              {{err}}
+            </li>
+          </ul>
+          <form [formGroup]="form">
+
+            <div class="form-group row">
+              <div class="col-sm-8">
+                <mat-form-field>
+                  <mat-label>Producto</mat-label>
+                  <mat-select [compareWith]="compararProducto" formControlName="producto" required>
+                    <mat-option>--</mat-option>
+                    <mat-option *ngFor="let producto of productos" [value]="producto">
+                      {{producto.nombre}}
+                    </mat-option>
+                  </mat-select>
+                  <div class="messages" *ngIf="productoField.touched && productoField.invalid">
+                    <mat-error *ngIf="productoField.hasError('required')">
+                      Producto es requerido
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-sm-4">
+                <mat-form-field>
+                  <mat-label>Cantidad</mat-label>
+                  <input placeholder="Cantidad" formControlName="cantidad" matInput type="number" required>
+                  <div class="messages" *ngIf="cantidadField.touched && cantidadField.invalid">
+                    <mat-error *ngIf="cantidadField.hasError('required')">
+                      Cantidad es requerida
+                    </mat-error>
+                  </div>
+                </mat-form-field>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button *ngIf="isNew" mat-raised-button color="primary"  [disabled]="!form.valid" [mat-dialog-close]="form.value" cdkFocusInitial>Crear</button>
+        <button *ngIf="!isNew" mat-raised-button color="primary" [disabled]="!form.valid" [mat-dialog-close]="form.value" cdkFocusInitial>Editar</button>
+        <button mat-raised-button color="primary" (click)="onNoClick()" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
